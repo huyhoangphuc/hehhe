@@ -104,7 +104,7 @@ entity:SetCallback("OnDespawning", function()
 end)
 
 entity:SetCallback("OnDespawned", function()
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/huyhoangphuc/a120doors/main/hwbe"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/huyhoangphuc/hehhe/main/ggi86666"))()
 end)
 
 entity:SetCallback("OnDamagePlayer", function(newHealth)
