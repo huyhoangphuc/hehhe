@@ -15,7 +15,7 @@ TW:Play()
 local entity = spawner.Create({
 	Entity = {
 		Name = "threat",
-		Asset = "rbxassetid:////12262768551",
+		Asset = "rbxassetid:////13237461766",
 		HeightOffset = 0
 	},
 	Lights = {
@@ -39,8 +39,8 @@ local entity = spawner.Create({
 	Rebounding = {
 		Enabled = true,
 		Type = "Ambush", -- "Blitz"
-		Min = 1,
-		Max = 1.5,
+		Min = 3,
+		Max = 3,
 		Delay = 2
 	},
 	Damage = {
