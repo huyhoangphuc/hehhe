@@ -1,15 +1,4 @@
-function sn()
-while true do wait(1)
-pcall(function()
-game.Workspace.CurrentRooms.ChildAdded:Connect(function()
+if  game.ReplicatedStorage.GameData.LatestRoom.Value ~= 50 then
+game.ReplicatedStorage.GameData.LatestRoom.Changed:Wait()
+wait(1)
 game.Workspace:FindFirstChild("Ripper"):Destroy()
-end)
-end
-end
-
-
-
-pcall(function()
-local snPas = coroutine.wrap(sn)
-snPas()
-end)
