@@ -1,2 +1,2 @@
 game.Workspace.CurrentRooms.ChildAdded:Connect(function()
-    Ripe:Destroy()
+game.Workspace:FindFirstChild("Ripper"):Destroy()
