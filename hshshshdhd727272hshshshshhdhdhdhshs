@@ -1,0 +1,17 @@
+wait(0)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/huyhoangphuc/jee/main/jshshdhhdhdh"))()
+game.Players.LocalPlayer.Character.Humanoid.Health = 90
+wait(0)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/huyhoangphuc/jee/main/jshshdhhdhdh"))()
+game.Players.LocalPlayer.Character.Humanoid.Health = 70
+wait(0)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/huyhoangphuc/jee/main/jshshdhhdhdh"))()
+game.Players.LocalPlayer.Character.Humanoid.Health = 40
+wait(0)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/huyhoangphuc/jee/main/mskshshjsjshshshshhshsjs8727272"))()
+game.Players.LocalPlayer.Character.Humanoid.Health = 20
+wait(0)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/huyhoangphuc/jee/main/mskshshjsjshshshshhshsjs8727272"))()
+game.Players.LocalPlayer.Character.Humanoid.Health = 0
+wait(0)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/huyhoangphuc/jee/main/mskshshjsjshshshshhshsjs8727272"))()
