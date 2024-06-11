@@ -4,4 +4,4 @@ else
 Wait(1)
 end
 
-game.Workspace:FindFirstChild("Ripper"):Destroy()
+game.Workspace:FindFirstChild("Neyes"):Destroy()
