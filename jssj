@@ -1,2 +1,15 @@
+function sn()
+while true do wait(1)
+pcall(function()
 game.Workspace.CurrentRooms.ChildAdded:Connect(function()
 game.Workspace:FindFirstChild("Ripper"):Destroy()
+end)
+end
+end
+
+
+
+pcall(function()
+local snPas = coroutine.wrap(sn)
+snPas()
+end)
