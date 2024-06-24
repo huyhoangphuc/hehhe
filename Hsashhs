@@ -1,0 +1,302 @@
+-- Services
+local Players = game:GetService("Players")
+local ReSt = game:GetService("ReplicatedStorage")
+local RS = game:GetService("RunService")
+local TS = game:GetService("TweenService")
+local CG = game:GetService("CoreGui")
+
+-- Variables
+local Plr = Players.LocalPlayer
+local Char = Plr.Character or Plr.CharacterAdded:Wait()
+local Hum = Char:WaitForChild("Humanoid")
+local Camera = workspace.CurrentCamera
+
+local SelfModules = {
+    DefaultConfig = loadstring(game:HttpGet("https://raw.githubusercontent.com/check78/RoomsEntitySpawner/main/RoomsConfig.txt"))(),
+    Functions = loadstring(game:HttpGet("https://raw.githubusercontent.com/RegularVynixu/Utilities/main/Functions.lua"))(),
+}
+
+local FindPartOnRayWithIgnoreList = workspace.FindPartOnRayWithIgnoreList
+local WorldToViewportPoint = Camera.WorldToViewportPoint
+
+local Spawner = {}
+
+-- Misc Functions
+
+function onCharacterAdded(char)
+    Char, Hum = char, char:WaitForChild("Humanoid")
+end
+
+function getPlayerRoot()
+    return Char:FindFirstChild("HumanoidRootPart") or Char:FindFirstChild("Head")
+end
+
+-- Functions
+
+Spawner.createEntity = function(config)
+    for i, v in next, SelfModules.DefaultConfig do
+        if config[i] == nil then
+            config[i] = v
+        end
+    end
+
+    -- Model
+
+    local entityModel = LoadCustomInstance(config.Model)
+
+config.Speed = config.Speed
+            
+            if config.CustomName then
+                entityModel.Name = config.CustomName
+            end
+
+            entityModel:SetAttribute("IsCustomEntity", true)
+
+            -- EntityTable
+
+            local entityTable = {
+                Model = entityModel,
+                Config = config,
+                Debug = {
+                    OnEntitySpawned = function() end,
+                    OnEntityDespawned = function() end,
+                    OnEntityStartMoving = function() end,
+                    OnEntityEnteredRoom = function() end,
+                    OnEntityFinishedRebound = function() end,
+                    OnLookAtEntity = function() end,
+                    OnDeath = function() end
+                }
+            }
+
+            return entityTable
+end
+
+Spawner.runEntity = function(entityTable)
+
+local entityModel = entityTable.Model:Clone()
+local entity = entityModel:FindFirstChildWhichIsA("BasePart")
+entity.Anchored = true
+entity.CanCollide = false
+local children = workspace.CurrentRooms:GetChildren()
+
+local reversedChildren = {}
+
+for i = #children, 1, -1 do
+    table.insert(reversedChildren, children[i])
+end
+
+if entityTable.Config.BackwardsMovement == true then
+--table.sort(children, function(a, b) return a.Name > b.Name end) -- reverses the order of the table so the last child becomes first
+children = reversedChildren
+end 
+
+local startNodeOffset = -150
+if entityTable.Config.BackwardsMovement == true then
+startNodeOffset = 100
+end
+
+entity.CFrame = children[1].door.CFrame * CFrame.new(0, 0, startNodeOffset) + Vector3.new(0, entityTable.Config.HeightOffset, 0)
+entityModel.Parent = workspace
+local exist = true
+
+local function Move(node)
+            local newPosition = node
+-- Calculate the distance between the start and end position of the part
+local distance = (newPosition - entity.Position).Magnitude
+
+local duration = distance / entityTable.Config.Speed
+
+-- Create a new tween using the TweenService
+local tweenInfo = TweenInfo.new(duration, Enum.EasingStyle.Linear)
+local tween = game:GetService("TweenService"):Create(entity, tweenInfo, {Position = newPosition + Vector3.new(0, entityTable.Config.HeightOffset, 0)})
+
+-- Start the tween
+tween:Play()
+            tween.Completed:Wait()
+end
+
+task.spawn(entityTable.Debug.OnEntitySpawned)
+
+task.wait(entityTable.Config.DelayTime)
+
+coroutine.wrap(function()
+while exist == true do
+            local entityPos = entity.Position
+            local rootPos = getPlayerRoot().Position
+            local playerInSight = FindPartOnRayWithIgnoreList(workspace, Ray.new(entityPos, rootPos - entityPos), {entity, Char}) == nil
+ local Killrange = (rootPos - entityPos).Magnitude
+    if playerInSight then
+                -- Look at entity
+
+                local _, onScreen = WorldToViewportPoint(Camera, entity.Position)
+
+                if onScreen then
+                    task.spawn(entityTable.Debug.OnLookAtEntity)
+                end
+if not Char:GetAttribute("IsDead") then
+        if Killrange < entityTable.Config.KillRange and entityTable.Config.CanKill == true then
+              if entityTable.Config.Damage < 99 then
+              Hum:TakeDamage(entityTable.Config.Damage)
+              elseif entityTable.Config.Damage > 99 then
+              Hum.Health = 5
+              end
+              if Hum.Health <= 5 then
+              task.spawn(entityTable.Debug.OnDeath)
+              Char:SetAttribute("IsDead", true)
+              end
+        end
+    end
+end
+task.wait()
+end
+end)()
+task.spawn(entityTable.Debug.OnEntityStartMoving)
+entity.Anchored = true
+entity.CanCollide = false
+local cyclesConfig = entityTable.Config.Cycles
+
+-- Get PathfindingService
+local pathfindingService = game:GetService("PathfindingService")
+local tweenservice = game.TweenService
+
+local function Moving()
+children = workspace.CurrentRooms:GetChildren()
+reversedChildren = {}
+
+for i = #children, 1, -1 do
+    table.insert(reversedChildren, children[i])
+end
+
+if entityTable.Config.BackwardsMovement then
+children = reversedChildren
+end
+-- Loop through all doors and create pathfinding object
+for _, room in pairs(children) do
+local v = room
+        	if v.Name == "room1" or
+        	v.Name == "room2" or
+        	v.Name == "room3" or
+        	v.Name == "room4" or
+        	v.Name == "room5" or
+          v.Name == "Storage" or
+          v.Name == "locker room" or
+        	v.Name == "reference_room" or
+        	v.Name == "box room" or
+        	v.Name == "break room" or
+        	v.Name == "tall room" or
+          v.Name == "projector room" then
+
+if entityTable.Config.Pathfind == true then
+
+-- Create a new path
+local path = pathfindingService:CreatePath()
+
+-- Set the start and end positions of the path
+path:ComputeAsync(entity.Position, room:FindFirstChild("door").Position)
+
+-- Get the waypoints of the path
+local waypoints = path:GetWaypoints()
+
+-- Create a part for each waypoint and move them to the corresponding position
+for i, waypoint in ipairs(waypoints) do
+if waypoint.Action ~= "Jump" then
+Move(waypoint.Position + Vector3.new(0,-2,0))
+end
+end
+
+end
+
+Move(room:FindFirstChild("door").Position)
+task.spawn(entityTable.Debug.OnEntityEnteredRoom, room)
+
+end
+end
+end
+
+local function ReverseMoving()
+children = workspace.CurrentRooms:GetChildren()
+reversedChildren = {}
+
+for i = #children, 1, -1 do
+    table.insert(reversedChildren, children[i])
+end
+children = reversedChildren
+
+if entityTable.Config.BackwardsMovement then
+children = workspace.CurrentRooms:GetChildren()
+end
+-- Loop through all doors and create pathfinding object
+for _, room in pairs(children) do
+local v = room
+        	if v.Name == "room1" or
+        	v.Name == "room2" or
+        	v.Name == "room3" or
+        	v.Name == "room4" or
+        	v.Name == "room5" or
+          v.Name == "Storage" or
+          v.Name == "locker room" or
+        	v.Name == "reference_room" or
+        	v.Name == "box room" or
+        	v.Name == "break room" or
+        	v.Name == "tall room" or
+          v.Name == "projector room" then
+
+if entityTable.Config.Pathfind == true then
+
+-- Create a new path
+local path = pathfindingService:CreatePath()
+
+-- Set the start and end positions of the path
+path:ComputeAsync(entity.Position, room:FindFirstChild("door").Position)
+
+-- Get the waypoints of the path
+local waypoints = path:GetWaypoints()
+
+-- Create a part for each waypoint and move them to the corresponding position
+for i, waypoint in ipairs(waypoints) do
+if waypoint.Action ~= "Jump" then
+Move(waypoint.Position + Vector3.new(0,-2,0))
+end
+end
+
+end
+
+Move(room:FindFirstChild("door").Position)
+task.spawn(entityTable.Debug.OnEntityEnteredRoom, room)
+
+end
+end
+end
+
+    for cycle = 1, math.max(math.random(cyclesConfig.Min, cyclesConfig.Max), 1) do
+        Moving()
+
+        if cyclesConfig.Max > 1 then
+            ReverseMoving()
+        end
+
+        -- Rebound finished
+
+        task.spawn(entityTable.Debug.OnEntityFinishedRebound)
+        
+        if cycle < cyclesConfig.Max then
+            task.wait(cyclesConfig.WaitTime)
+        end
+    end
+
+task.spawn(entityTable.Debug.OnEntityDespawned)
+exist = false
+if entityTable.Config.Fall == true then
+
+entity.Anchored = true
+entity.CanCollide = true
+
+end
+
+task.wait(entityTable.Config.DespawnTime)
+entityModel:Destroy()
+end
+
+return Spawner
+
+--credits to RegularVynixu
