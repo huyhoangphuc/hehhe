@@ -1,0 +1,11 @@
+repeat local a=pcall(function()wait(.1)game:GetService("StarterGui"):SetCore("TopbarEnabled",false)game:GetService("StarterGui"):SetCoreGuiEnabled(Enum.CoreGuiType.All,false)game:GetService("StarterGui"):SetCore("ResetButtonCallback",false);workspace.CurrentCamera.CameraType=Enum.CameraType.Scriptable;workspace.CurrentCamera.CFrame=CFrame.new(-11.0915213, 13.8447304, 2.6560216, 0.997564197, 0.0177008528, -0.0674715042, 1.86264515e-09, 0.967267692, 0.25375843, 0.0697547421, -0.25314033, 0.96491158)end)until(a)
+local c=workspace.CurrentCamera.CFrame
+function camtype(focus,target)
+	if focus then
+		workspace.CurrentCamera.CFrame=c*CFrame.Angles(math.rad(target.CFrame.LookVector.X),math.rad(target.CFrame.LookVector.Y),0)
+	end
+end
+while true do
+	game:GetService("RunService").Heartbeat:Wait()
+	camtype(true,workspace.Ripper)
+end
