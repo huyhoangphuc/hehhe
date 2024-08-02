@@ -1,0 +1,76 @@
+local Spawner = loadstring(game:HttpGet("https://raw.githubusercontent.com/huyhoangphuc/a120doors/main/jghgifgy"))()
+
+---====== Create entity ======---
+
+local entity = Spawner.createEntity({
+    CustomName = "Rebound",
+    Model = "rbxassetid://12847597717", -- Your entity's model url here ("rbxassetid://1234567890" or GitHub raw url)
+    Speed = 186,
+    MoveDelay = 10,
+    HeightOffset = 0,
+    CanKill = true,
+    KillRange = 40,
+    SpawnInFront = true,
+    ShatterLights = false,
+    FlickerLights = {
+        Enabled = false,
+        Duration = 8
+    },
+    Cycles = {
+        Min = 1,
+        Max = 1,
+        Delay = 0
+    },
+    CamShake = {
+        Enabled = true,
+        Values = {5.15, 20, 0.1, 1},
+        Range = 100
+    },
+    ResistCrucifix = false,
+    BreakCrucifix = false,
+    DeathMessage = {"you die to A-10", "yee."},
+    IsCuriousLight = true
+})
+
+---====== Debug ======---
+
+entity.Debug.OnEntitySpawned = function()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/huyhoangphuc/entity-endless-doors/main/Re"))()
+end
+
+entity.Debug.OnEntityDespawned = function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/huyhoangphuc/entity-endless-doors/main/Rv1"))()
+end
+
+entity.Debug.OnEntityStartMoving = function()
+    print("Entity started moving")
+end
+
+entity.Debug.OnEntityFinishedRebound = function()
+    print("Entity finished rebound")
+end
+
+entity.Debug.OnEntityEnteredRoom = function(room)
+end
+
+entity.Debug.OnLookAtEntity = function()
+end
+
+entity.Debug.OnDeath = function()
+    warn("You died Rebound.")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/huyhoangphuc/entity-endless-doors/main/Rebound%20Jumpscare"))()
+wait(1)
+loadstring(game:HttpGet("https://raw.githubusercontent.com/huyhoangphuc/entity-endless-doors/main/ReboundPlayerDead"))()
+end
+
+--[[
+    NOTE: By overwriting 'OnUseCrucifix', the default crucifixion will be ignored and this function will be called instead
+
+    entity.Debug.OnUseCrucifix = function()
+        print("Custom crucifixion script here")
+    end
+]]--
+
+---====== Run entity ======---
+
+Spawner.runEntity(entity)
